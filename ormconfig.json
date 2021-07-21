@@ -1,0 +1,13 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5438,
+  "username": "admin",
+  "password": "admin",
+  "database": "nestjs",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "cli": {
+    "migrationsDir": "./src/db/migrations"
+},
+  "synchronize": true
+}
