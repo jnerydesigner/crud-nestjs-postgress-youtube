@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { Helper } from 'src/shared/helper';
+import { HelperFile } from 'src/shared/helper';
 
 @Controller('users')
 export class UserController {
@@ -53,7 +53,7 @@ export class UserController {
     FileInterceptor('avatar', {
       storage: diskStorage({
         destination: './upload/avatar',
-        filename: Helper.customFilename,
+        filename: HelperFile.customFilename,
       }),
     }),
   )
@@ -61,6 +61,7 @@ export class UserController {
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    // return file.path;
     return this.userService.updateAvatar(id, file.path);
   }
 }

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HelperFile } from 'src/shared/helper';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { Helper } from 'src/shared/helper';
 
 @Injectable()
 export class UserService {
@@ -29,26 +29,6 @@ export class UserService {
     return this.userRepository.findOne(id);
   }
 
-  async updateAvatar(id: string, file: string) {
-    const userAvatar = await this.userRepository.findOne(id);
-
-    if (userAvatar.avatar === null || userAvatar.avatar === '') {
-      await this.userRepository.update(id, {
-        avatar: file,
-      });
-    } else {
-      await Helper.removeFile(userAvatar.avatar);
-
-      await this.userRepository.update(id, {
-        avatar: file,
-      });
-    }
-
-    const user = await this.userRepository.findOne(id);
-
-    return user;
-  }
-
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.userRepository.update(id, updateUserDto);
 
@@ -66,5 +46,25 @@ export class UserService {
       throw new Error('user does not exists');
     }
     return deleteUser.remove();
+  }
+
+  async updateAvatar(id: string, file: string) {
+    const userAvatar = await this.userRepository.findOne(id);
+
+    if (userAvatar.avatar === null || userAvatar.avatar === '') {
+      await this.userRepository.update(id, {
+        avatar: file,
+      });
+    } else {
+      await HelperFile.removeFile(userAvatar.avatar);
+
+      await this.userRepository.update(id, {
+        avatar: file,
+      });
+    }
+
+    const user = await this.userRepository.findOne(id);
+
+    return user;
   }
 }
