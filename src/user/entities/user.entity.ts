@@ -18,6 +18,9 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   avatar: string;
 
+  @Column({ nullable: true })
+  avatar_url: string;
+
   @CreateDateColumn()
   created_at: string;
 

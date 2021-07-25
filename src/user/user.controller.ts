@@ -8,13 +8,16 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { join, resolve } from 'path';
 import { HelperFile } from 'src/shared/helper';
+import { Response } from 'express';
 
 @Controller('users')
 export class UserController {
@@ -55,13 +58,25 @@ export class UserController {
         destination: './upload/avatar',
         filename: HelperFile.customFilename,
       }),
+      limits: {
+        fileSize: 1024 * 1024 * 5,
+      },
     }),
   )
   updateAvatar(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // return file.path;
-    return this.userService.updateAvatar(id, file.path);
+    return this.userService.updateAvatar(id, file.path, file.filename);
+  }
+
+  @Get('profile-image/:imagename')
+  findProfileImage(
+    @Param('imagename') imagename: string,
+    @Res() res: Response,
+  ) {
+    return res.sendFile(imagename, {
+      root: './upload/avatar',
+    });
   }
 }

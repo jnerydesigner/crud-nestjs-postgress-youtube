@@ -48,18 +48,20 @@ export class UserService {
     return deleteUser.remove();
   }
 
-  async updateAvatar(id: string, file: string) {
+  async updateAvatar(id: string, file: string, fileName: string) {
     const userAvatar = await this.userRepository.findOne(id);
 
     if (userAvatar.avatar === null || userAvatar.avatar === '') {
       await this.userRepository.update(id, {
         avatar: file,
+        avatar_url: process.env.HOST + '/users/profile-image/' + fileName,
       });
     } else {
       await HelperFile.removeFile(userAvatar.avatar);
 
       await this.userRepository.update(id, {
         avatar: file,
+        avatar_url: process.env.HOST + '/users/profile-image/' + fileName,
       });
     }
 
